@@ -2,7 +2,7 @@ package com.softard.wow.screencapture.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
+import android.graphics.ImageFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -29,6 +29,7 @@ import java.util.Date;
  */
 
 public class ScreenCapturer {
+    private static final String TAG = "ScreenCapturer";
     private static MediaProjection sMediaProjection;
     boolean isScreenCaptureStarted;
     OnImageCaptureScreenListener listener;
@@ -60,7 +61,7 @@ public class ScreenCapturer {
 
         if (TextUtils.isEmpty(savePath)) {
             File externalFilesDir = mContext.getExternalFilesDir(null);
-            Log.d("WOW", "externalFilesDir:" + externalFilesDir.getAbsolutePath());
+            Log.d(TAG, "externalFilesDir:" + externalFilesDir.getAbsolutePath());
             if (externalFilesDir != null) {
                 STORE_DIR = externalFilesDir.getAbsolutePath() + "/myScreenshots";
             } else {
@@ -77,17 +78,17 @@ public class ScreenCapturer {
             if (!storeDir.exists()) {
                 boolean success = storeDir.mkdirs();
                 if (!success) {
-                    Log.d("WOW", "mkdir " + storeDir + "  failed");
+                    Log.d(TAG, "mkdir " + storeDir + "  failed");
                     return this;
                 } else {
-                    Log.d("WOW", "mkdir " + storeDir + "  success");
+                    Log.d(TAG, "mkdir " + storeDir + "  success");
                 }
             } else {
-                Log.d("WOW", " " + storeDir + "  exist");
+                Log.d(TAG, " " + storeDir + "  exist");
             }
 
         } else {
-            Log.d("WOW", "get mediaprojection failed");
+            Log.d(TAG, "get mediaprojection failed");
         }
 
         try {
@@ -103,13 +104,13 @@ public class ScreenCapturer {
         // use getMetrics is 2030, use getRealMetrics is 2160, the diff is NavigationBar's height
         mDisplay.getRealMetrics(metrics);
         mDensity = metrics.densityDpi;
-        Log.d("WOW", "metrics.widthPixels is " + metrics.widthPixels);
-        Log.d("WOW", "metrics.heightPixels is " + metrics.heightPixels);
+        Log.d(TAG, "metrics.widthPixels is " + metrics.widthPixels);
+        Log.d(TAG, "metrics.heightPixels is " + metrics.heightPixels);
         mWidth = metrics.widthPixels;//size.x;
         mHeight = metrics.heightPixels;//size.y;
 
         //start capture reader
-        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+        mImageReader = ImageReader.newInstance(mWidth, mHeight, ImageFormat.FLEX_RGBA_8888, 2);
         mVirtualDisplay = sMediaProjection.createVirtualDisplay(
                 "ScreenShot",
                 mWidth,
@@ -145,7 +146,7 @@ public class ScreenCapturer {
                                     currentDate) + ".png";
                             fos = new FileOutputStream(fileName);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                            Log.d("WOW", "End now!!!!!!  Screenshot saved in " + fileName);
+                            Log.d(TAG, "End now!!!!!!  Screenshot saved in " + fileName);
                             Toast.makeText(mContext, "Screenshot saved in " + fileName,
                                     Toast.LENGTH_LONG);
                             stopProjection();
@@ -176,7 +177,7 @@ public class ScreenCapturer {
 
     public ScreenCapturer stopProjection() {
         isScreenCaptureStarted = false;
-        Log.d("WOW", "Screen captured");
+        Log.d(TAG, "Screen captured");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
