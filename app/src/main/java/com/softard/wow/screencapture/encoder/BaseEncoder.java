@@ -67,7 +67,7 @@ public abstract class BaseEncoder implements Encoder {
      * Must call in a worker handler thread!
      */
     @Override
-    public void prepare() throws IOException {
+    public void prepareEncoder() throws IOException {
         if (Looper.myLooper() == null
                 || Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException("should run in a HandlerThread");
@@ -75,7 +75,7 @@ public abstract class BaseEncoder implements Encoder {
         if (mEncoder != null) {
             throw new IllegalStateException("prepared!");
         }
-        MediaFormat format = createMediaFormat();
+        MediaFormat format = generateMediaFormat();
         Log.d("Encoder", "Create media format: " + format);
 
         String mimeType = format.getString(MediaFormat.KEY_MIME);
@@ -96,8 +96,8 @@ public abstract class BaseEncoder implements Encoder {
     }
 
     /**
-     * call immediately after {@link #getEncoder() MediaCodec}
-     * configure with {@link #createMediaFormat() MediaFormat} success
+     * call immediately after {@link #getMediaCodecEncoder() MediaCodec}
+     * configure with {@link #generateMediaFormat() MediaFormat} success
      *
      * @param encoder
      */
@@ -122,43 +122,43 @@ public abstract class BaseEncoder implements Encoder {
     /**
      * create {@link MediaFormat} for {@link MediaCodec}
      */
-    protected abstract MediaFormat createMediaFormat();
+    protected abstract MediaFormat generateMediaFormat();
 
-    public final MediaCodec getEncoder() {
-        return Objects.requireNonNull(mEncoder, "doesn't prepare()");
+    public final MediaCodec getMediaCodecEncoder() {
+        return Objects.requireNonNull(mEncoder, "doesn't prepareEncoder()");
     }
 
     /**
-     * @throws NullPointerException if prepare() not call
+     * @throws NullPointerException if prepareEncoder() not call
      * @see MediaCodec#getOutputBuffer(int)
      */
     public final ByteBuffer getOutputBuffer(int index) {
-        return getEncoder().getOutputBuffer(index);
+        return getMediaCodecEncoder().getOutputBuffer(index);
     }
 
     /**
-     * @throws NullPointerException if prepare() not call
+     * @throws NullPointerException if prepareEncoder() not call
      * @see MediaCodec#getInputBuffer(int)
      */
     public final ByteBuffer getInputBuffer(int index) {
-        return getEncoder().getInputBuffer(index);
+        return getMediaCodecEncoder().getInputBuffer(index);
     }
 
     /**
-     * @throws NullPointerException if prepare() not call
+     * @throws NullPointerException if prepareEncoder() not call
      * @see MediaCodec#queueInputBuffer(int, int, int, long, int)
      * @see MediaCodec#getInputBuffer(int)
      */
     public final void queueInputBuffer(int index, int offset, int size, long pstTs, int flags) {
-        getEncoder().queueInputBuffer(index, offset, size, pstTs, flags);
+        getMediaCodecEncoder().queueInputBuffer(index, offset, size, pstTs, flags);
     }
 
     /**
-     * @throws NullPointerException if prepare() not call
+     * @throws NullPointerException if prepareEncoder() not call
      * @see MediaCodec#releaseOutputBuffer(int, boolean)
      */
     public final void releaseOutputBuffer(int index) {
-        getEncoder().releaseOutputBuffer(index, false);
+        getMediaCodecEncoder().releaseOutputBuffer(index, false);
     }
 
     /**

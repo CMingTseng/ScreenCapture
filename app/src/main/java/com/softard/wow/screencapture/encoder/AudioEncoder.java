@@ -19,7 +19,7 @@ public class AudioEncoder extends BaseEncoder {
     }
 
     @Override
-    protected MediaFormat createMediaFormat() {
+    protected MediaFormat generateMediaFormat() {
         return mConfig.toMediaFormat();
     }
 }

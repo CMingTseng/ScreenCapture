@@ -71,8 +71,8 @@ public class MicRecorder implements Encoder {
     }
 
     @Override
-    public void prepare() throws IOException {
-        Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should prepare in HandlerThread");
+    public void prepareEncoder() throws IOException {
+        Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should prepareEncoder in HandlerThread");
         // run callback in caller thread
         mCallbackDelegate = new CallbackDelegate(myLooper, mCallback);
         mRecordThread.start();
@@ -173,7 +173,7 @@ public class MicRecorder implements Encoder {
                         mMic = r;
                     }
                     try {
-                        mEncoder.prepare();
+                        mEncoder.prepareEncoder();
                     } catch (Exception e) {
                         mCallbackDelegate.onError(MicRecorder.this, e);
                         break;
@@ -227,11 +227,11 @@ public class MicRecorder implements Encoder {
                 if (info == null) {
                     info = new MediaCodec.BufferInfo();
                 }
-                int index = mEncoder.getEncoder().dequeueOutputBuffer(info, 1);
+                int index = mEncoder.getMediaCodecEncoder().dequeueOutputBuffer(info, 1);
                 if (BuildConfig.DEBUG)
                     Log.d(TAG, "audio encoder returned output buffer index=" + index);
                 if (index == INFO_OUTPUT_FORMAT_CHANGED) {
-                    mCallbackDelegate.onOutputFormatChanged(mEncoder, mEncoder.getEncoder().getOutputFormat());
+                    mCallbackDelegate.onOutputFormatChanged(mEncoder, mEncoder.getMediaCodecEncoder().getOutputFormat());
                 }
                 if (index < 0) {
                     info.set(0, 0, 0, 0);
@@ -245,7 +245,7 @@ public class MicRecorder implements Encoder {
         }
 
         private int pollInput() {
-            return mEncoder.getEncoder().dequeueInputBuffer(0);
+            return mEncoder.getMediaCodecEncoder().dequeueInputBuffer(0);
         }
 
         private void pollInputIfNeed() {

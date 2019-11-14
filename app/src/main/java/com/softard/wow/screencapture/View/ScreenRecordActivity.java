@@ -13,7 +13,6 @@ import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -29,6 +28,8 @@ import com.softard.wow.screencapture.Utils.ScreenUtils;
 
 import java.io.File;
 import java.io.IOException;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 使用MediaRecorder MediaProjection 录屏
@@ -248,7 +249,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements TextureVi
 //        try {
 //            mPlayer.setDataSource(ScreenUtils.VIDEO_PATH);
 //            mPlayer.setSurface(mSurface);
-//            mPlayer.prepare();
+//            mPlayer.prepareEncoder();
 //            mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 //                @Override
 //                public void onPrepared(MediaPlayer mp) {

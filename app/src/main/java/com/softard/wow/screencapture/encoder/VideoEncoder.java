@@ -20,7 +20,6 @@ public class VideoEncoder extends BaseEncoder {
     private VideoEncodeConfig mConfig;
     private Surface mSurface;
 
-
     public VideoEncoder(VideoEncodeConfig config) {
         super(config.mCodecName);
         this.mConfig = config;
@@ -33,15 +32,15 @@ public class VideoEncoder extends BaseEncoder {
     }
 
     @Override
-    protected MediaFormat createMediaFormat() {
+    protected MediaFormat generateMediaFormat() {
         return mConfig.toMediaFormat();
     }
 
     /**
-     * @throws NullPointerException if prepare() not call
+     * @throws NullPointerException if prepareEncoder() not call
      */
     public Surface getInputSurface() {
-        return Objects.requireNonNull(mSurface, "doesn't prepare()");
+        return Objects.requireNonNull(mSurface, "doesn't prepareEncoder()");
     }
 
     @Override
