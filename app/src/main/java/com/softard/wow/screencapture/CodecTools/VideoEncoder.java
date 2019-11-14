@@ -5,6 +5,9 @@ import android.media.MediaFormat;
 import android.util.Log;
 import android.view.Surface;
 
+import com.softard.wow.screencapture.BuildConfig;
+import com.softard.wow.screencapture.config.VideoEncodeConfig;
+
 import java.util.Objects;
 
 /**
@@ -13,25 +16,25 @@ import java.util.Objects;
  * Copyright (c) 2019 Softard. All rights reserved.
  */
 public class VideoEncoder extends BaseEncoder {
-    private static final boolean VERBOSE = false;
+    private static final String TAG = "VideoEncoder";
     private VideoEncodeConfig mConfig;
     private Surface mSurface;
 
 
     VideoEncoder(VideoEncodeConfig config) {
-        super(config.codecName);
+        super(config.mCodecName);
         this.mConfig = config;
     }
 
     @Override
     protected void onEncoderConfigured(MediaCodec encoder) {
         mSurface = encoder.createInputSurface();
-        if (VERBOSE) Log.i("@@", "VideoEncoder create input surface: " + mSurface);
+        if (BuildConfig.DEBUG) Log.e(TAG, "VideoEncoder create input surface: " + mSurface);
     }
 
     @Override
     protected MediaFormat createMediaFormat() {
-        return mConfig.toFormat();
+        return mConfig.toMediaFormat();
     }
 
     /**

@@ -10,6 +10,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.softard.wow.screencapture.config.AudioEncodeConfig;
+import com.softard.wow.screencapture.config.VideoEncodeConfig;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -19,14 +22,13 @@ import static android.media.MediaFormat.MIMETYPE_AUDIO_AAC;
 import static android.media.MediaFormat.MIMETYPE_VIDEO_AVC;
 
 /**
- * Created by wOw on 2019-08-19.
- * Email: wossoneri@163.com
- * Copyright (c) 2019 Softard. All rights reserved.
+ * Created by wOw on 2019-08-19. Email: wossoneri@163.com Copyright (c) 2019 Softard. All rights
+ * reserved.
  */
 public class ScreenRecorder {
+    private static final String TAG = "ScreenRecorder";
     public static final String VIDEO_AVC = MIMETYPE_VIDEO_AVC; // H.264 Advanced Video Coding
     public static final String AUDIO_AAC = MIMETYPE_AUDIO_AAC; // H.264 Advanced Audio Coding
-    private static final String TAG = "ScreenRecorder";
     private static final boolean VERBOSE = false;
     private static final int INVALID_INDEX = -1;
     private static final int MSG_START = 0;

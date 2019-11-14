@@ -26,20 +26,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.softard.wow.screencapture.BuildConfig;
-import com.softard.wow.screencapture.CodecTools.AudioEncodeConfig;
 import com.softard.wow.screencapture.CodecTools.ScreenRecorder;
 import com.softard.wow.screencapture.CodecTools.Utils;
-import com.softard.wow.screencapture.CodecTools.VideoEncodeConfig;
 import com.softard.wow.screencapture.R;
+import com.softard.wow.screencapture.config.AudioEncodeConfig;
+import com.softard.wow.screencapture.config.VideoEncodeConfig;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -176,8 +175,8 @@ public class ScreenRecordByCodecActivity extends AppCompatActivity {
         int iframe = 1;//getSelectedIFrameInterval();
         int bitrate = 800;//getSelectedVideoBitrate();
         MediaCodecInfo.CodecProfileLevel profileLevel = null;//getSelectedProfileLevel();
-        return new VideoEncodeConfig(width, height, bitrate,
-                framerate, iframe, codec, VIDEO_AVC, profileLevel);
+        return new VideoEncodeConfig(codec, VIDEO_AVC, width, height, bitrate,
+                framerate, iframe, profileLevel);
     }
 
     private MediaCodecInfo.CodecProfileLevel getSelectedProfileLevel() {
