@@ -35,9 +35,6 @@ public class ScreenRecorder {
     public static final String AUDIO_AAC = MIMETYPE_AUDIO_AAC; // H.264 Advanced Audio Coding
     private static final boolean VERBOSE = false;
     private static final int INVALID_INDEX = -1;
-    private static final int MSG_START = 0;
-    private static final int MSG_STOP = 1;
-    private static final int MSG_ERROR = 2;
     private static final int STOP_WITH_EOS = 1;
     private String mDstPath;
     private VideoEncoder mVideoEncoder;
@@ -86,7 +83,7 @@ public class ScreenRecorder {
         mWorker = new HandlerThread(TAG);
         mWorker.start();
         mHandler = new CallbackHandler(mWorker.getLooper());
-        mHandler.sendEmptyMessage(MSG_START);
+        mHandler.sendEmptyMessage(RecordAction.MSG_START);
     }
 
     public void setCallback(Callback callback) {
@@ -296,7 +293,7 @@ public class ScreenRecorder {
                     muxVideo(index, info);
                 } catch (Exception e) {
                     Log.e(TAG, "Muxer encountered an error! ", e);
-                    Message.obtain(mHandler, MSG_ERROR, e).sendToTarget();
+                    Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
                 }
             }
 
@@ -304,7 +301,7 @@ public class ScreenRecorder {
             public void onError(Encoder codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "VideoEncoder ran into an error! ", e);
-                Message.obtain(mHandler, MSG_ERROR, e).sendToTarget();
+                Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
             }
 
             @Override
@@ -332,7 +329,7 @@ public class ScreenRecorder {
                     muxAudio(index, info);
                 } catch (Exception e) {
                     Log.e(TAG, "Muxer encountered an error! ", e);
-                    Message.obtain(mHandler, MSG_ERROR, e).sendToTarget();
+                    Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
                 }
             }
 
@@ -348,7 +345,7 @@ public class ScreenRecorder {
             public void onError(Encoder codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "MicRecorder ran into an error! ", e);
-                Message.obtain(mHandler, MSG_ERROR, e).sendToTarget();
+                Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
             }
 
 
@@ -358,7 +355,7 @@ public class ScreenRecorder {
     }
 
     private void signalStop(boolean stopWithEOS) {
-        Message msg = Message.obtain(mHandler, MSG_STOP, stopWithEOS ? STOP_WITH_EOS : 0, 0);
+        Message msg = Message.obtain(mHandler, RecordAction.MSG_STOP, stopWithEOS ? STOP_WITH_EOS : 0, 0);
         mHandler.sendMessageAtFrontOfQueue(msg);
     }
 
@@ -441,7 +438,7 @@ public class ScreenRecorder {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_START:
+                case RecordAction.MSG_START:
                     try {
                         record();
                         if (mCallback != null) {
@@ -451,8 +448,8 @@ public class ScreenRecorder {
                     } catch (Exception e) {
                         msg.obj = e;
                     }
-                case MSG_STOP:
-                case MSG_ERROR:
+                case RecordAction.MSG_STOP:
+                case RecordAction.MSG_ERROR:
                     stopEncoders();
                     if (msg.arg1 != STOP_WITH_EOS) signalEndOfStream();
                     if (mCallback != null) {

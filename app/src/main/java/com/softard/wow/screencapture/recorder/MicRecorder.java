@@ -77,7 +77,7 @@ public class MicRecorder implements Encoder {
         mCallbackDelegate = new CallbackDelegate(myLooper, mCallback);
         mRecordThread.start();
         mRecordHandler = new RecordHandler(mRecordThread.getLooper());
-        mRecordHandler.sendEmptyMessage(MSG_PREPARE);
+        mRecordHandler.sendEmptyMessage(RecordAction.MSG_PREPARE);
     }
 
     @Override
@@ -87,18 +87,18 @@ public class MicRecorder implements Encoder {
             mCallbackDelegate.removeCallbacksAndMessages(null);
         }
         mForceStop.set(true);
-        if (mRecordHandler != null) mRecordHandler.sendEmptyMessage(MSG_STOP);
+        if (mRecordHandler != null) mRecordHandler.sendEmptyMessage(RecordAction.MSG_STOP);
     }
 
     @Override
     public void release() {
-        if (mRecordHandler != null) mRecordHandler.sendEmptyMessage(MSG_RELEASE);
+        if (mRecordHandler != null) mRecordHandler.sendEmptyMessage(RecordAction.MSG_RELEASE);
         mRecordThread.quitSafely();
     }
 
     void releaseOutputBuffer(int index) {
         if (BuildConfig.DEBUG) Log.d(TAG, "audio encoder released output buffer index=" + index);
-        Message.obtain(mRecordHandler, MSG_RELEASE_OUTPUT, index, 0).sendToTarget();
+        Message.obtain(mRecordHandler, RecordAction.MSG_RELEASE_OUTPUT, index, 0).sendToTarget();
     }
 
 
@@ -142,13 +142,6 @@ public class MicRecorder implements Encoder {
 
     }
 
-    private static final int MSG_PREPARE = 0;
-    private static final int MSG_FEED_INPUT = 1;
-    private static final int MSG_DRAIN_OUTPUT = 2;
-    private static final int MSG_RELEASE_OUTPUT = 3;
-    private static final int MSG_STOP = 4;
-    private static final int MSG_RELEASE = 5;
-
     private class RecordHandler extends Handler {
 
         private LinkedList<MediaCodec.BufferInfo> mCachedInfos = new LinkedList<>();
@@ -162,7 +155,7 @@ public class MicRecorder implements Encoder {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_PREPARE:
+                case RecordAction.MSG_PREPARE:
                     AudioRecord r = createAudioRecord(mSampleRate, mChannelConfig, mFormat);
                     if (r == null) {
                         Log.e(TAG, "create audio record failure");
@@ -178,7 +171,7 @@ public class MicRecorder implements Encoder {
                         mCallbackDelegate.onError(MicRecorder.this, e);
                         break;
                     }
-                case MSG_FEED_INPUT:
+                case RecordAction.MSG_FEED_INPUT:
                     if (!mForceStop.get()) {
                         int index = pollInput();
                         if (BuildConfig.DEBUG)
@@ -186,32 +179,32 @@ public class MicRecorder implements Encoder {
                         if (index >= 0) {
                             feedAudioEncoder(index);
                             // tell encoder to eat the fresh meat!
-                            if (!mForceStop.get()) sendEmptyMessage(MSG_DRAIN_OUTPUT);
+                            if (!mForceStop.get()) sendEmptyMessage(RecordAction.MSG_DRAIN_OUTPUT);
                         } else {
                             // try later...
                             if (BuildConfig.DEBUG) Log.i(TAG, "try later to poll input buffer");
-                            sendEmptyMessageDelayed(MSG_FEED_INPUT, mPollRate);
+                            sendEmptyMessageDelayed(RecordAction.MSG_FEED_INPUT, mPollRate);
                         }
                     }
                     break;
-                case MSG_DRAIN_OUTPUT:
+                case RecordAction.MSG_DRAIN_OUTPUT:
                     offerOutput();
                     pollInputIfNeed();
                     break;
-                case MSG_RELEASE_OUTPUT:
+                case RecordAction.MSG_RELEASE_OUTPUT:
                     mEncoder.releaseOutputBuffer(msg.arg1);
                     mMuxingOutputBufferIndices.poll(); // Nobody care what it exactly is.
                     if (BuildConfig.DEBUG) Log.d(TAG, "audio encoder released output buffer index="
                             + msg.arg1 + ", remaining=" + mMuxingOutputBufferIndices.size());
                     pollInputIfNeed();
                     break;
-                case MSG_STOP:
+                case RecordAction.MSG_STOP:
                     if (mMic != null) {
                         mMic.stop();
                     }
                     mEncoder.stop();
                     break;
-                case MSG_RELEASE:
+                case RecordAction.MSG_RELEASE:
                     if (mMic != null) {
                         mMic.release();
                         mMic = null;
@@ -251,8 +244,8 @@ public class MicRecorder implements Encoder {
         private void pollInputIfNeed() {
             if (mMuxingOutputBufferIndices.size() <= 1 && !mForceStop.get()) {
                 // need fresh data, right now!
-                removeMessages(MSG_FEED_INPUT);
-                sendEmptyMessageDelayed(MSG_FEED_INPUT, 0);
+                removeMessages(RecordAction.MSG_FEED_INPUT);
+                sendEmptyMessageDelayed(RecordAction.MSG_FEED_INPUT, 0);
             }
         }
     }
