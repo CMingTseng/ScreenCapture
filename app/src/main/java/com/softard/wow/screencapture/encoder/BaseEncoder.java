@@ -67,7 +67,7 @@ public abstract class BaseEncoder implements Encoder {
      * Must call in a worker handler thread!
      */
     @Override
-    public void prepareEncoder() throws IOException {
+    public void onPrepare() throws IOException {
         if (Looper.myLooper() == null
                 || Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException("should run in a HandlerThread");
@@ -125,11 +125,11 @@ public abstract class BaseEncoder implements Encoder {
     protected abstract MediaFormat generateMediaFormat();
 
     public final MediaCodec getMediaCodecEncoder() {
-        return Objects.requireNonNull(mEncoder, "doesn't prepareEncoder()");
+        return Objects.requireNonNull(mEncoder, "doesn't onPrepare()");
     }
 
     /**
-     * @throws NullPointerException if prepareEncoder() not call
+     * @throws NullPointerException if onPrepare() not call
      * @see MediaCodec#getOutputBuffer(int)
      */
     public final ByteBuffer getOutputBuffer(int index) {
@@ -137,7 +137,7 @@ public abstract class BaseEncoder implements Encoder {
     }
 
     /**
-     * @throws NullPointerException if prepareEncoder() not call
+     * @throws NullPointerException if onPrepare() not call
      * @see MediaCodec#getInputBuffer(int)
      */
     public final ByteBuffer getInputBuffer(int index) {
@@ -145,7 +145,7 @@ public abstract class BaseEncoder implements Encoder {
     }
 
     /**
-     * @throws NullPointerException if prepareEncoder() not call
+     * @throws NullPointerException if onPrepare() not call
      * @see MediaCodec#queueInputBuffer(int, int, int, long, int)
      * @see MediaCodec#getInputBuffer(int)
      */
@@ -154,7 +154,7 @@ public abstract class BaseEncoder implements Encoder {
     }
 
     /**
-     * @throws NullPointerException if prepareEncoder() not call
+     * @throws NullPointerException if onPrepare() not call
      * @see MediaCodec#releaseOutputBuffer(int, boolean)
      */
     public final void releaseOutputBuffer(int index) {

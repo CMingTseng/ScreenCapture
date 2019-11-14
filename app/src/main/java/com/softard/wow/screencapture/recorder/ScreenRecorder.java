@@ -311,7 +311,7 @@ public class ScreenRecorder {
             }
         };
         mVideoEncoder.setCallback(callback);
-        mVideoEncoder.prepareEncoder();
+        mVideoEncoder.onPrepare();
     }
 
     private void prepareAudioEncoder() throws IOException {
@@ -351,7 +351,7 @@ public class ScreenRecorder {
 
         };
         micRecorder.setCallback(callback);
-        micRecorder.prepareEncoder();
+        micRecorder.onPrepare();
     }
 
     private void signalStop(boolean stopWithEOS) {

@@ -71,8 +71,8 @@ public class MicRecorder implements Encoder {
     }
 
     @Override
-    public void prepareEncoder() throws IOException {
-        Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should prepareEncoder in HandlerThread");
+    public void onPrepare() throws IOException {
+        Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should onPrepare in HandlerThread");
         // run callback in caller thread
         mCallbackDelegate = new CallbackDelegate(myLooper, mCallback);
         mRecordThread.start();
@@ -166,7 +166,7 @@ public class MicRecorder implements Encoder {
                         mMic = r;
                     }
                     try {
-                        mEncoder.prepareEncoder();
+                        mEncoder.onPrepare();
                     } catch (Exception e) {
                         mCallbackDelegate.onError(MicRecorder.this, e);
                         break;

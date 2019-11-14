@@ -37,10 +37,10 @@ public class VideoEncoder extends BaseEncoder {
     }
 
     /**
-     * @throws NullPointerException if prepareEncoder() not call
+     * @throws NullPointerException if onPrepare() not call
      */
     public Surface getInputSurface() {
-        return Objects.requireNonNull(mSurface, "doesn't prepareEncoder()");
+        return Objects.requireNonNull(mSurface, "doesn't onPrepare()");
     }
 
     @Override

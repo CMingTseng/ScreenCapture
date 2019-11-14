@@ -4,7 +4,7 @@ package com.softard.wow.screencapture.encoder;
 import java.io.IOException;
 
 public interface Encoder {
-    void prepareEncoder() throws IOException;
+    void onPrepare() throws IOException;
 
     void stop();
 
