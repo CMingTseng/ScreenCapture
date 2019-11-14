@@ -27,11 +27,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.softard.wow.screencapture.BuildConfig;
-import com.softard.wow.screencapture.CodecTools.ScreenRecorder;
 import com.softard.wow.screencapture.CodecTools.Utils;
 import com.softard.wow.screencapture.R;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.config.VideoEncodeConfig;
+import com.softard.wow.screencapture.recorder.ScreenRecorder;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -45,8 +45,8 @@ import butterknife.ButterKnife;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.os.Build.VERSION_CODES.M;
-import static com.softard.wow.screencapture.CodecTools.ScreenRecorder.AUDIO_AAC;
-import static com.softard.wow.screencapture.CodecTools.ScreenRecorder.VIDEO_AVC;
+import static com.softard.wow.screencapture.recorder.ScreenRecorder.AUDIO_AAC;
+import static com.softard.wow.screencapture.recorder.ScreenRecorder.VIDEO_AVC;
 
 public class ScreenRecordByCodecActivity extends AppCompatActivity {
 

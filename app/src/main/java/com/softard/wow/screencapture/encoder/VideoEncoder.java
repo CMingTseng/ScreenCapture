@@ -1,4 +1,4 @@
-package com.softard.wow.screencapture.CodecTools;
+package com.softard.wow.screencapture.encoder;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -21,7 +21,7 @@ public class VideoEncoder extends BaseEncoder {
     private Surface mSurface;
 
 
-    VideoEncoder(VideoEncodeConfig config) {
+    public VideoEncoder(VideoEncodeConfig config) {
         super(config.mCodecName);
         this.mConfig = config;
     }
@@ -40,7 +40,7 @@ public class VideoEncoder extends BaseEncoder {
     /**
      * @throws NullPointerException if prepare() not call
      */
-    Surface getInputSurface() {
+    public Surface getInputSurface() {
         return Objects.requireNonNull(mSurface, "doesn't prepare()");
     }
 

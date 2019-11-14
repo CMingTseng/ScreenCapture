@@ -1,9 +1,9 @@
 
-package com.softard.wow.screencapture.CodecTools;
+package com.softard.wow.screencapture.encoder;
 
 import java.io.IOException;
 
-interface Encoder {
+public interface Encoder {
     void prepare() throws IOException;
 
     void stop();

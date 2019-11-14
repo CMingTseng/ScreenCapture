@@ -1,4 +1,4 @@
-package com.softard.wow.screencapture.CodecTools;
+package com.softard.wow.screencapture.encoder;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -14,7 +14,7 @@ import java.util.Objects;
  * Email: wossoneri@163.com
  * Copyright (c) 2019 Softard. All rights reserved.
  */
-abstract class BaseEncoder implements Encoder {
+public abstract class BaseEncoder implements Encoder {
     private String mCodecName;
     private MediaCodec mEncoder;
     private Callback mCallback;
@@ -124,7 +124,7 @@ abstract class BaseEncoder implements Encoder {
      */
     protected abstract MediaFormat createMediaFormat();
 
-    protected final MediaCodec getEncoder() {
+    public final MediaCodec getEncoder() {
         return Objects.requireNonNull(mEncoder, "doesn't prepare()");
     }
 
@@ -182,14 +182,14 @@ abstract class BaseEncoder implements Encoder {
         }
     }
 
-    static abstract class Callback implements Encoder.Callback {
+    public static abstract class Callback implements Encoder.Callback {
         void onInputBufferAvailable(BaseEncoder encoder, int index) {
         }
 
-        void onOutputFormatChanged(BaseEncoder encoder, MediaFormat format) {
+        public void onOutputFormatChanged(BaseEncoder encoder, MediaFormat format) {
         }
 
-        void onOutputBufferAvailable(BaseEncoder encoder, int index, MediaCodec.BufferInfo info) {
+        public void onOutputBufferAvailable(BaseEncoder encoder, int index, MediaCodec.BufferInfo info) {
         }
     }
 

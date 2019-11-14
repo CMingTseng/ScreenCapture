@@ -1,4 +1,4 @@
-package com.softard.wow.screencapture.CodecTools;
+package com.softard.wow.screencapture.recorder;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -16,6 +16,9 @@ import android.util.SparseLongArray;
 
 import com.softard.wow.screencapture.BuildConfig;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
+import com.softard.wow.screencapture.encoder.AudioEncoder;
+import com.softard.wow.screencapture.encoder.BaseEncoder;
+import com.softard.wow.screencapture.encoder.Encoder;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

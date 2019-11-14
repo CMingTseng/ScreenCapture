@@ -1,4 +1,4 @@
-package com.softard.wow.screencapture.CodecTools;
+package com.softard.wow.screencapture.encoder;
 
 import android.media.MediaFormat;
 
@@ -13,7 +13,7 @@ public class AudioEncoder extends BaseEncoder {
     private static final String TAG = "AudioEncoder";
     private final AudioEncodeConfig mConfig;
 
-    AudioEncoder(AudioEncodeConfig config) {
+    public AudioEncoder(AudioEncodeConfig config) {
         super(config.mCodecName);
         this.mConfig = config;
     }
