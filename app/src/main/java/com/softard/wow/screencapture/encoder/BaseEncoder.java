@@ -21,33 +21,31 @@ public abstract class BaseEncoder implements Encoder {
     /**
      * let media codec run async mode if mCallback != null
      */
-    private MediaCodec.Callback mCodecCallback = new MediaCodec.Callback() {
-        @Override
-        public void onInputBufferAvailable(MediaCodec codec, int index) {
-            mCallback.onInputBufferAvailable(BaseEncoder.this, index);
-        }
+    private MediaCodec.Callback mCodecCallback;
 
-        @Override
-        public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
-            mCallback.onOutputBufferAvailable(BaseEncoder.this, index, info);
-        }
-
-        @Override
-        public void onError(MediaCodec codec, MediaCodec.CodecException e) {
-            mCallback.onError(BaseEncoder.this, e);
-        }
-
-        @Override
-        public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
-            mCallback.onOutputFormatChanged(BaseEncoder.this, format);
-        }
-    };
-
-    BaseEncoder() {
-    }
-
-    BaseEncoder(String codecName) {
+    public BaseEncoder(String codecName) {
         this.mCodecName = codecName;
+        mCodecCallback = new MediaCodec.Callback() {
+            @Override
+            public void onInputBufferAvailable(MediaCodec codec, int index) {
+                mCallback.onInputBufferAvailable(BaseEncoder.this, index);
+            }
+
+            @Override
+            public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
+                mCallback.onOutputBufferAvailable(BaseEncoder.this, index, info);
+            }
+
+            @Override
+            public void onError(MediaCodec codec, MediaCodec.CodecException e) {
+                mCallback.onError(BaseEncoder.this, e);
+            }
+
+            @Override
+            public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
+                mCallback.onOutputFormatChanged(BaseEncoder.this, format);
+            }
+        };
     }
 
     @Override
