@@ -14,7 +14,7 @@ import java.util.Objects;
  * Email: wossoneri@163.com
  * Copyright (c) 2019 Softard. All rights reserved.
  */
-public abstract class BaseEncoder implements Encoder {
+public abstract class BaseEncoder implements BaseEncoderTask {
     private String mCodecName;
     private MediaCodec mEncoder;
     private Callback mCallback;
@@ -49,7 +49,7 @@ public abstract class BaseEncoder implements Encoder {
     }
 
     @Override
-    public void setCallback(Encoder.Callback callback) {
+    public void setCallback(BaseEncoderTask.Callback callback) {
         if (!(callback instanceof Callback)) {
             throw new IllegalArgumentException();
         }
@@ -74,7 +74,7 @@ public abstract class BaseEncoder implements Encoder {
             throw new IllegalStateException("prepared!");
         }
         MediaFormat format = generateMediaFormat();
-        Log.d("Encoder", "Create media format: " + format);
+        Log.d("BaseEncoderTask", "Create media format: " + format);
 
         String mimeType = format.getString(MediaFormat.KEY_MIME);
         final MediaCodec encoder = createEncoder(mimeType);
@@ -87,7 +87,7 @@ public abstract class BaseEncoder implements Encoder {
             onEncoderConfigured(encoder);
             encoder.start();
         } catch (MediaCodec.CodecException e) {
-            Log.e("Encoder", "Configure codec failure!\n  with format" + format, e);
+            Log.e("BaseEncoderTask", "Configure codec failure!\n  with format" + format, e);
             throw e;
         }
         mEncoder = encoder;
@@ -180,7 +180,7 @@ public abstract class BaseEncoder implements Encoder {
         }
     }
 
-    public static abstract class Callback implements Encoder.Callback {
+    public static abstract class Callback implements BaseEncoderTask.Callback {
         void onInputBufferAvailable(BaseEncoder encoder, int index) {
         }
 

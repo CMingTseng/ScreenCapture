@@ -14,7 +14,7 @@ import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.config.VideoEncodeConfig;
 import com.softard.wow.screencapture.encoder.AudioEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoder;
-import com.softard.wow.screencapture.encoder.Encoder;
+import com.softard.wow.screencapture.encoder.BaseEncoderTask;
 import com.softard.wow.screencapture.encoder.VideoEncoder;
 
 import java.io.IOException;
@@ -298,7 +298,7 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(Encoder codec, Exception e) {
+            public void onError(BaseEncoderTask codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "VideoEncoder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
@@ -342,7 +342,7 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(Encoder codec, Exception e) {
+            public void onError(BaseEncoderTask codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "MicRecorder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();

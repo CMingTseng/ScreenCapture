@@ -18,7 +18,7 @@ import com.softard.wow.screencapture.BuildConfig;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.encoder.AudioEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoder;
-import com.softard.wow.screencapture.encoder.Encoder;
+import com.softard.wow.screencapture.encoder.BaseEncoderTask;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,7 +37,7 @@ import static android.os.Build.VERSION_CODES.N;
  * Email: wossoneri@163.com
  * Copyright (c) 2019 Softard. All rights reserved.
  */
-public class MicRecorder implements Encoder {
+public class MicRecorder implements BaseEncoderTask {
     private static final String TAG = "MicRecorder";
     private final AudioEncoder mEncoder;
     private final HandlerThread mRecordThread;
@@ -116,7 +116,7 @@ public class MicRecorder implements Encoder {
         }
 
 
-        void onError(Encoder encoder, Exception exception) {
+        void onError(BaseEncoderTask encoder, Exception exception) {
             Message.obtain(this, () -> {
                 if (mCallback != null) {
                     mCallback.onError(encoder, exception);
