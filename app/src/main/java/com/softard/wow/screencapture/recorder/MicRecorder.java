@@ -3,7 +3,6 @@ package com.softard.wow.screencapture.recorder;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
-import android.media.MediaFormat;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
@@ -17,7 +16,6 @@ import android.util.SparseLongArray;
 import com.softard.wow.screencapture.BuildConfig;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.encoder.AudioEncoder;
-import com.softard.wow.screencapture.encoder.BaseEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoderTask;
 import com.softard.wow.screencapture.encoder.MediaCallback;
 
@@ -105,39 +103,6 @@ public class MicRecorder implements BaseEncoderTask {
 
     ByteBuffer getOutputBuffer(int index) {
         return mEncoder.getOutputBuffer(index);
-    }
-
-    private static class CallbackDelegate extends Handler {
-        private MediaCallback mCallback;
-
-        public CallbackDelegate(Looper l, MediaCallback callback) {
-            super(l);
-            this.mCallback = callback;
-        }
-
-        void onError(BaseEncoderTask encoder, MediaCodec codec, Exception exception) {
-            Message.obtain(this, () -> {
-                if (mCallback != null) {
-                    mCallback.onError(encoder, codec, exception);
-                }
-            }).sendToTarget();
-        }
-
-        void onOutputFormatChanged(BaseEncoder encoder, MediaFormat format) {
-            Message.obtain(this, () -> {
-                if (mCallback != null) {
-                    mCallback.onOutputFormatChanged(encoder, format);
-                }
-            }).sendToTarget();
-        }
-
-        void onOutputBufferAvailable(BaseEncoder encoder, int index, MediaCodec.BufferInfo info) {
-            Message.obtain(this, () -> {
-                if (mCallback != null) {
-                    mCallback.onOutputBufferAvailable(encoder, index, info);
-                }
-            }).sendToTarget();
-        }
     }
 
     private class RecordHandler extends Handler {
