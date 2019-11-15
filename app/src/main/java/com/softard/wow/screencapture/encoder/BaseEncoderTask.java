@@ -1,6 +1,8 @@
 
 package com.softard.wow.screencapture.encoder;
 
+import android.media.MediaCodec;
+
 import java.io.IOException;
 
 public interface BaseEncoderTask {
@@ -10,9 +12,5 @@ public interface BaseEncoderTask {
 
     void release();
 
-    void setCallback(Callback callback);
-
-    interface Callback {
-        void onError(BaseEncoderTask encoder, Exception exception);
-    }
+    void onError(BaseEncoderTask basktask, MediaCodec codec, MediaCodec.CodecException e);
 }

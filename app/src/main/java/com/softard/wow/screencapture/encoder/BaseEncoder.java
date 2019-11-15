@@ -15,6 +15,7 @@ import java.util.Objects;
  * Copyright (c) 2019 Softard. All rights reserved.
  */
 public abstract class BaseEncoder implements BaseEncoderTask {
+    private final static String TAG = "BaseEncoder";
     private String mCodecName;
     private MediaCodec mEncoder;
     private Callback mCallback;
@@ -38,7 +39,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
 
             @Override
             public void onError(MediaCodec codec, MediaCodec.CodecException e) {
-                mCallback.onError(BaseEncoder.this, e);
+                BaseEncoder.this.onError(BaseEncoder.this, codec, e);
             }
 
             @Override
@@ -48,16 +49,9 @@ public abstract class BaseEncoder implements BaseEncoderTask {
         };
     }
 
-    @Override
-    public void setCallback(BaseEncoderTask.Callback callback) {
-        if (!(callback instanceof Callback)) {
-            throw new IllegalArgumentException();
-        }
-        this.setCallback((Callback) callback);
-    }
-
-    void setCallback(Callback callback) {
-        if (this.mEncoder != null) throw new IllegalStateException("mEncoder is not null");
+    public void setCallback(Callback callback) {
+        if (this.mEncoder != null)
+            throw new IllegalStateException("Encoder(MediaCodec) is not null");
         this.mCallback = callback;
     }
 
@@ -74,7 +68,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
             throw new IllegalStateException("prepared!");
         }
         MediaFormat format = generateMediaFormat();
-        Log.d("BaseEncoderTask", "Create media format: " + format);
+        Log.d(TAG, "Create media format: " + format);
 
         String mimeType = format.getString(MediaFormat.KEY_MIME);
         final MediaCodec encoder = createEncoder(mimeType);
@@ -87,7 +81,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
             onEncoderConfigured(encoder);
             encoder.start();
         } catch (MediaCodec.CodecException e) {
-            Log.e("BaseEncoderTask", "Configure codec failure!\n  with format" + format, e);
+            Log.e(TAG, "Configure codec failure!\n  with format" + format, e);
             throw e;
         }
         mEncoder = encoder;
@@ -112,7 +106,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
                 return MediaCodec.createByCodecName(mCodecName);
             }
         } catch (IOException e) {
-            Log.w("@@", "Create MediaCodec by name '" + mCodecName + "' failure!", e);
+            Log.w(TAG, "Create MediaCodec by name '" + mCodecName + "' failure!", e);
         }
         return MediaCodec.createEncoderByType(type);
     }
@@ -179,17 +173,4 @@ public abstract class BaseEncoder implements BaseEncoderTask {
             mEncoder = null;
         }
     }
-
-    public static abstract class Callback implements BaseEncoderTask.Callback {
-        void onInputBufferAvailable(BaseEncoder encoder, int index) {
-        }
-
-        public void onOutputFormatChanged(BaseEncoder encoder, MediaFormat format) {
-        }
-
-        public void onOutputBufferAvailable(BaseEncoder encoder, int index, MediaCodec.BufferInfo info) {
-        }
-    }
-
-
 }

@@ -51,4 +51,9 @@ public class VideoEncoder extends BaseEncoder {
         }
         super.release();
     }
+
+    @Override
+    public void onError(BaseEncoderTask basktask, MediaCodec codec, MediaCodec.CodecException e) {
+
+    }
 }
