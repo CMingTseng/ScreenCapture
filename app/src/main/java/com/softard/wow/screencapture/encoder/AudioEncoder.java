@@ -25,7 +25,7 @@ public class AudioEncoder extends BaseEncoder {
     }
 
     @Override
-    public void onError(BaseEncoderTask basktask, MediaCodec codec, MediaCodec.CodecException e) {
+    public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
 
     }
 }

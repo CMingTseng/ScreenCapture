@@ -19,6 +19,7 @@ import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.encoder.AudioEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoderTask;
+import com.softard.wow.screencapture.encoder.MediaCallback;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -48,11 +49,11 @@ public class MicRecorder implements BaseEncoderTask {
     private int mFormat = AudioFormat.ENCODING_PCM_16BIT;
 
     private AtomicBoolean mForceStop = new AtomicBoolean(false);
-    private BaseEncoder.Callback mCallback;
+    private MediaCallback mCallback;
     private CallbackDelegate mCallbackDelegate;
     private int mChannelsSampleRate;
 
-    MicRecorder(AudioEncodeConfig config) {
+    public MicRecorder(AudioEncodeConfig config) {
         mEncoder = new AudioEncoder(config);
         mSampleRate = config.sampleRate;
         mChannelsSampleRate = mSampleRate * config.channelCount;
@@ -61,12 +62,7 @@ public class MicRecorder implements BaseEncoderTask {
         mRecordThread = new HandlerThread(TAG);
     }
 
-    @Override
-    public void setCallback(Callback callback) {
-        this.mCallback = (BaseEncoder.Callback) callback;
-    }
-
-    public void setCallback(BaseEncoder.Callback callback) {
+    public void setCallback(MediaCallback callback) {
         this.mCallback = callback;
     }
 
@@ -96,6 +92,11 @@ public class MicRecorder implements BaseEncoderTask {
         mRecordThread.quitSafely();
     }
 
+    @Override
+    public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
+
+    }
+
     void releaseOutputBuffer(int index) {
         if (BuildConfig.DEBUG) Log.d(TAG, "audio encoder released output buffer index=" + index);
         Message.obtain(mRecordHandler, RecordAction.MSG_RELEASE_OUTPUT, index, 0).sendToTarget();
@@ -106,20 +107,18 @@ public class MicRecorder implements BaseEncoderTask {
         return mEncoder.getOutputBuffer(index);
     }
 
-
     private static class CallbackDelegate extends Handler {
-        private BaseEncoder.Callback mCallback;
+        private MediaCallback mCallback;
 
-        CallbackDelegate(Looper l, BaseEncoder.Callback callback) {
+        public CallbackDelegate(Looper l, MediaCallback callback) {
             super(l);
             this.mCallback = callback;
         }
 
-
-        void onError(BaseEncoderTask encoder, Exception exception) {
+        void onError(BaseEncoderTask encoder, MediaCodec codec, Exception exception) {
             Message.obtain(this, () -> {
                 if (mCallback != null) {
-                    mCallback.onError(encoder, exception);
+                    mCallback.onError(encoder, codec, exception);
                 }
             }).sendToTarget();
         }
@@ -139,7 +138,6 @@ public class MicRecorder implements BaseEncoderTask {
                 }
             }).sendToTarget();
         }
-
     }
 
     private class RecordHandler extends Handler {
@@ -159,7 +157,7 @@ public class MicRecorder implements BaseEncoderTask {
                     AudioRecord r = createAudioRecord(mSampleRate, mChannelConfig, mFormat);
                     if (r == null) {
                         Log.e(TAG, "create audio record failure");
-                        mCallbackDelegate.onError(MicRecorder.this, new IllegalArgumentException());
+                        mCallbackDelegate.onError(MicRecorder.this, null, new IllegalArgumentException());
                         break;
                     } else {
                         r.startRecording();
@@ -168,7 +166,7 @@ public class MicRecorder implements BaseEncoderTask {
                     try {
                         mEncoder.onPrepare();
                     } catch (Exception e) {
-                        mCallbackDelegate.onError(MicRecorder.this, e);
+                        mCallbackDelegate.onError(MicRecorder.this, null, e);
                         break;
                     }
                 case RecordAction.MSG_FEED_INPUT:

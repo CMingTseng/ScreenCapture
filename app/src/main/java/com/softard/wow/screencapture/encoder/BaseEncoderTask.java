@@ -12,5 +12,5 @@ public interface BaseEncoderTask {
 
     void release();
 
-    void onError(BaseEncoderTask basktask, MediaCodec codec, MediaCodec.CodecException e);
+    void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e);
 }

@@ -18,7 +18,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
     private final static String TAG = "BaseEncoder";
     private String mCodecName;
     private MediaCodec mEncoder;
-    private Callback mCallback;
+    private MediaCallback mCallback;
     /**
      * let media codec run async mode if mCallback != null
      */
@@ -49,7 +49,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
         };
     }
 
-    public void setCallback(Callback callback) {
+    public void setCallback(MediaCallback callback) {
         if (this.mEncoder != null)
             throw new IllegalStateException("Encoder(MediaCodec) is not null");
         this.mCallback = callback;

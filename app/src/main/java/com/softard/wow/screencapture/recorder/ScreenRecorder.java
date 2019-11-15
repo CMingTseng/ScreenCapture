@@ -12,9 +12,9 @@ import android.util.Log;
 
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.config.VideoEncodeConfig;
-import com.softard.wow.screencapture.encoder.AudioEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoder;
 import com.softard.wow.screencapture.encoder.BaseEncoderTask;
+import com.softard.wow.screencapture.encoder.MediaCallback;
 import com.softard.wow.screencapture.encoder.VideoEncoder;
 
 import java.io.IOException;
@@ -283,8 +283,23 @@ public class ScreenRecorder {
 
     // @WorkerThread
     private void prepareVideoEncoder() throws IOException {
-        VideoEncoder.Callback callback = new VideoEncoder.Callback() {
+        MediaCallback callback = new MediaCallback() {
             boolean ranIntoError = false;
+
+            @Override
+            public void onPrepare() throws IOException {
+
+            }
+
+            @Override
+            public void stop() {
+
+            }
+
+            @Override
+            public void release() {
+
+            }
 
             @Override
             public void onOutputBufferAvailable(BaseEncoder codec, int index, MediaCodec.BufferInfo info) {
@@ -298,10 +313,15 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(BaseEncoderTask codec, Exception e) {
+            public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "VideoEncoder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
+            }
+
+            @Override
+            public void onInputBufferAvailable(BaseEncoder encoder, int index) {
+
             }
 
             @Override
@@ -317,8 +337,23 @@ public class ScreenRecorder {
     private void prepareAudioEncoder() throws IOException {
         final MicRecorder micRecorder = mAudioEncoder;
         if (micRecorder == null) return;
-        AudioEncoder.Callback callback = new AudioEncoder.Callback() {
+        MediaCallback callback = new MediaCallback() {
             boolean ranIntoError = false;
+
+            @Override
+            public void onPrepare() throws IOException {
+
+            }
+
+            @Override
+            public void stop() {
+
+            }
+
+            @Override
+            public void release() {
+
+            }
 
             @Override
             public void onOutputBufferAvailable(BaseEncoder codec, int index, MediaCodec.BufferInfo info) {
@@ -334,6 +369,11 @@ public class ScreenRecorder {
             }
 
             @Override
+            public void onInputBufferAvailable(BaseEncoder encoder, int index) {
+
+            }
+
+            @Override
             public void onOutputFormatChanged(BaseEncoder codec, MediaFormat format) {
                 if (VERBOSE)
                     Log.d(TAG, "[" + Thread.currentThread().getId() + "] AudioEncoder returned new format " + format);
@@ -342,7 +382,7 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(BaseEncoderTask codec, Exception e) {
+            public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "MicRecorder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
