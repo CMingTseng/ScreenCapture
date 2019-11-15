@@ -13,7 +13,7 @@ import android.util.Log;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.config.VideoEncodeConfig;
 import com.softard.wow.screencapture.encoder.BaseEncoder;
-import com.softard.wow.screencapture.encoder.BaseEncoderTask;
+import com.softard.wow.screencapture.encoder.BaseEncoderAction;
 import com.softard.wow.screencapture.encoder.MediaCallback;
 import com.softard.wow.screencapture.encoder.VideoEncoder;
 
@@ -287,7 +287,7 @@ public class ScreenRecorder {
             boolean ranIntoError = false;
 
             @Override
-            public void onPrepare() throws IOException {
+            public void prepare() throws IOException {
 
             }
 
@@ -313,7 +313,14 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
+            public void onError(MediaCodec codec, Exception e) {
+                ranIntoError = true;
+                Log.e(TAG, "VideoEncoder ran into an error! ", e);
+                Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
+            }
+
+            @Override
+            public void onActionError(BaseEncoderAction basktask, MediaCodec codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "VideoEncoder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
@@ -331,7 +338,7 @@ public class ScreenRecorder {
             }
         };
         mVideoEncoder.setCallback(callback);
-        mVideoEncoder.onPrepare();
+        mVideoEncoder.prepare();
     }
 
     private void prepareAudioEncoder() throws IOException {
@@ -341,7 +348,7 @@ public class ScreenRecorder {
             boolean ranIntoError = false;
 
             @Override
-            public void onPrepare() throws IOException {
+            public void prepare() throws IOException {
 
             }
 
@@ -369,6 +376,13 @@ public class ScreenRecorder {
             }
 
             @Override
+            public void onError(MediaCodec codec, Exception e) {
+                ranIntoError = true;
+                Log.e(TAG, "MicRecorder ran into an error! ", e);
+                Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
+            }
+
+            @Override
             public void onInputBufferAvailable(BaseEncoder encoder, int index) {
 
             }
@@ -382,7 +396,7 @@ public class ScreenRecorder {
             }
 
             @Override
-            public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
+            public void onActionError(BaseEncoderAction basktask, MediaCodec codec, Exception e) {
                 ranIntoError = true;
                 Log.e(TAG, "MicRecorder ran into an error! ", e);
                 Message.obtain(mHandler, RecordAction.MSG_ERROR, e).sendToTarget();
@@ -390,8 +404,8 @@ public class ScreenRecorder {
 
 
         };
-        micRecorder.setCallback(callback);
-        micRecorder.onPrepare();
+//        micRecorder.setCallback(callback);
+        micRecorder.prepare();
     }
 
     private void signalStop(boolean stopWithEOS) {

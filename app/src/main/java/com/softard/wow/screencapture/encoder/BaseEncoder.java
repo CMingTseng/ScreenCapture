@@ -14,7 +14,7 @@ import java.util.Objects;
  * Email: wossoneri@163.com
  * Copyright (c) 2019 Softard. All rights reserved.
  */
-public abstract class BaseEncoder implements BaseEncoderTask {
+public abstract class BaseEncoder implements BaseEncoderAction {
     private final static String TAG = "BaseEncoder";
     private String mCodecName;
     private MediaCodec mEncoder;
@@ -39,7 +39,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
 
             @Override
             public void onError(MediaCodec codec, MediaCodec.CodecException e) {
-                BaseEncoder.this.onError(BaseEncoder.this, codec, e);
+                BaseEncoder.this.onActionError(BaseEncoder.this, codec, e);
             }
 
             @Override
@@ -59,7 +59,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
      * Must call in a worker handler thread!
      */
     @Override
-    public void onPrepare() throws IOException {
+    public void prepare() throws IOException {
         if (Looper.myLooper() == null
                 || Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalStateException("should run in a HandlerThread");
@@ -117,11 +117,11 @@ public abstract class BaseEncoder implements BaseEncoderTask {
     protected abstract MediaFormat generateMediaFormat();
 
     public final MediaCodec getMediaCodecEncoder() {
-        return Objects.requireNonNull(mEncoder, "doesn't onPrepare()");
+        return Objects.requireNonNull(mEncoder, "doesn't prepare()");
     }
 
     /**
-     * @throws NullPointerException if onPrepare() not call
+     * @throws NullPointerException if prepare() not call
      * @see MediaCodec#getOutputBuffer(int)
      */
     public final ByteBuffer getOutputBuffer(int index) {
@@ -129,7 +129,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
     }
 
     /**
-     * @throws NullPointerException if onPrepare() not call
+     * @throws NullPointerException if prepare() not call
      * @see MediaCodec#getInputBuffer(int)
      */
     public final ByteBuffer getInputBuffer(int index) {
@@ -137,7 +137,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
     }
 
     /**
-     * @throws NullPointerException if onPrepare() not call
+     * @throws NullPointerException if prepare() not call
      * @see MediaCodec#queueInputBuffer(int, int, int, long, int)
      * @see MediaCodec#getInputBuffer(int)
      */
@@ -146,7 +146,7 @@ public abstract class BaseEncoder implements BaseEncoderTask {
     }
 
     /**
-     * @throws NullPointerException if onPrepare() not call
+     * @throws NullPointerException if prepare() not call
      * @see MediaCodec#releaseOutputBuffer(int, boolean)
      */
     public final void releaseOutputBuffer(int index) {

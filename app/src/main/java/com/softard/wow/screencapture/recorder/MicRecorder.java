@@ -3,8 +3,6 @@ package com.softard.wow.screencapture.recorder;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
-import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -15,27 +13,24 @@ import android.util.SparseLongArray;
 import com.softard.wow.screencapture.BuildConfig;
 import com.softard.wow.screencapture.config.AudioEncodeConfig;
 import com.softard.wow.screencapture.encoder.AudioEncoder;
-import com.softard.wow.screencapture.encoder.BaseEncoderTask;
+import com.softard.wow.screencapture.encoder.BaseEncoderAction;
 import com.softard.wow.screencapture.encoder.MediaCallback;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 import static android.media.MediaCodec.BUFFER_FLAG_KEY_FRAME;
 import static android.media.MediaCodec.INFO_OUTPUT_FORMAT_CHANGED;
-import static android.os.Build.VERSION_CODES.N;
 
 /**
- * Created by wOw on 2019-08-19.
- * Email: wossoneri@163.com
- * Copyright (c) 2019 Softard. All rights reserved.
+ * Created by wOw on 2019-08-19. Email: wossoneri@163.com Copyright (c) 2019 Softard. All rights
+ * reserved.
  */
-public class MicRecorder implements BaseEncoderTask {
+public class MicRecorder implements BaseEncoderAction {
     private static final String TAG = "MicRecorder";
     private final AudioEncoder mEncoder;
 
@@ -64,7 +59,7 @@ public class MicRecorder implements BaseEncoderTask {
     }
 
     @Override
-    public void onPrepare() throws IOException {
+    public void prepare() throws IOException {
         Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should onPrepare in HandlerThread");
         // run callback in caller thread
         mCallbackDelegate = new CallbackDelegate(myLooper, mCallback);
@@ -90,7 +85,7 @@ public class MicRecorder implements BaseEncoderTask {
     }
 
     @Override
-    public void onError(BaseEncoderTask basktask, MediaCodec codec, Exception e) {
+    public void onActionError(BaseEncoderAction basktask, MediaCodec codec, Exception e) {
 
     }
 
@@ -118,7 +113,7 @@ public class MicRecorder implements BaseEncoderTask {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case RecordAction.MSG_PREPARE:
-                    AudioRecord r = createAudioRecord(mSampleRate, mChannelConfig, mFormat);
+                    AudioRecord r = AudioUtils.createAudioRecord(mSampleRate, mChannelConfig, mFormat);
                     if (r == null) {
                         Log.e(TAG, "create audio record failure");
                         mCallbackDelegate.onError(MicRecorder.this, null, new IllegalArgumentException());
@@ -128,7 +123,7 @@ public class MicRecorder implements BaseEncoderTask {
                         mMic = r;
                     }
                     try {
-                        mEncoder.onPrepare();
+                        mEncoder.prepare();
                     } catch (Exception e) {
                         mCallbackDelegate.onError(MicRecorder.this, null, e);
                         break;
@@ -249,8 +244,7 @@ public class MicRecorder implements BaseEncoderTask {
     private SparseLongArray mFramesUsCache = new SparseLongArray(2);
 
     /**
-     * Gets presentation time (us) of polled frame.
-     * 1 sample = 16 bit
+     * Gets presentation time (us) of polled frame. 1 sample = 16 bit
      */
     private long calculateFrameTimestamp(int totalBits) {
         int samples = totalBits >> 4;
@@ -278,32 +272,5 @@ public class MicRecorder implements BaseEncoderTask {
         }
         mFramesUsCache.put(LAST_FRAME_ID, currentUs + frameUs);
         return currentUs;
-    }
-
-    private static AudioRecord createAudioRecord(int sampleRateInHz, int channelConfig, int audioFormat) {
-        int minBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
-        if (minBytes <= 0) {
-            Log.e(TAG, String.format(Locale.US, "Bad arguments: getMinBufferSize(%d, %d, %d)",
-                    sampleRateInHz, channelConfig, audioFormat));
-            return null;
-        }
-        AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                sampleRateInHz,
-                channelConfig,
-                audioFormat,
-                minBytes * 2);
-
-        if (record.getState() == AudioRecord.STATE_UNINITIALIZED) {
-            Log.e(TAG, String.format(Locale.US, "Bad arguments to new AudioRecord %d, %d, %d",
-                    sampleRateInHz, channelConfig, audioFormat));
-            return null;
-        }
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, "created AudioRecord " + record + ", MinBufferSize= " + minBytes);
-            if (Build.VERSION.SDK_INT >= N) {
-                Log.d(TAG, " size in frame " + record.getBufferSizeInFrames());
-            }
-        }
-        return record;
     }
 }

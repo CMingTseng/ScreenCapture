@@ -249,7 +249,7 @@ public class ScreenRecordActivity extends AppCompatActivity implements TextureVi
 //        try {
 //            mPlayer.setDataSource(ScreenUtils.VIDEO_PATH);
 //            mPlayer.setSurface(mSurface);
-//            mPlayer.onPrepare();
+//            mPlayer.prepare();
 //            mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 //                @Override
 //                public void onPrepared(MediaPlayer mp) {

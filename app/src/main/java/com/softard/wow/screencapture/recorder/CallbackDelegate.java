@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.softard.wow.screencapture.encoder.BaseEncoder;
-import com.softard.wow.screencapture.encoder.BaseEncoderTask;
+import com.softard.wow.screencapture.encoder.BaseEncoderAction;
 import com.softard.wow.screencapture.encoder.MediaCallback;
 
 public class CallbackDelegate extends Handler {
@@ -19,10 +19,10 @@ public class CallbackDelegate extends Handler {
         this.mCallback = callback;
     }
 
-    void onError(BaseEncoderTask encoder, MediaCodec codec, Exception exception) {
+    void onError(BaseEncoderAction encoder, MediaCodec codec, Exception exception) {
         Message.obtain(this, () -> {
             if (mCallback != null) {
-                mCallback.onError(encoder, codec, exception);
+                mCallback.onActionError(encoder, codec, exception);
             }
         }).sendToTarget();
     }
