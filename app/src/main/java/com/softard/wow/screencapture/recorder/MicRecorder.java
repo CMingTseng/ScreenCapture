@@ -6,7 +6,6 @@ import android.media.MediaCodec;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
@@ -39,7 +38,7 @@ import static android.os.Build.VERSION_CODES.N;
 public class MicRecorder implements BaseEncoderTask {
     private static final String TAG = "MicRecorder";
     private final AudioEncoder mEncoder;
-    private final HandlerThread mRecordThread;
+
     private RecordHandler mRecordHandler;
     private AudioRecord mMic; // access in mRecordThread only!
     private int mSampleRate;
@@ -56,8 +55,8 @@ public class MicRecorder implements BaseEncoderTask {
         mSampleRate = config.sampleRate;
         mChannelsSampleRate = mSampleRate * config.channelCount;
         if (BuildConfig.DEBUG) Log.i(TAG, "in bitrate " + mChannelsSampleRate * 16 /* PCM_16BIT*/);
-        mChannelConfig = config.channelCount == 2 ? AudioFormat.CHANNEL_IN_STEREO : AudioFormat.CHANNEL_IN_MONO;
-        mRecordThread = new HandlerThread(TAG);
+        mChannelConfig = config.channelCount;
+
     }
 
     public void setCallback(MediaCallback callback) {
@@ -69,8 +68,8 @@ public class MicRecorder implements BaseEncoderTask {
         Looper myLooper = Objects.requireNonNull(Looper.myLooper(), "Should onPrepare in HandlerThread");
         // run callback in caller thread
         mCallbackDelegate = new CallbackDelegate(myLooper, mCallback);
-        mRecordThread.start();
-        mRecordHandler = new RecordHandler(mRecordThread.getLooper());
+
+        mRecordHandler = new RecordHandler(Looper.myLooper());
         mRecordHandler.sendEmptyMessage(RecordAction.MSG_PREPARE);
     }
 
@@ -87,7 +86,7 @@ public class MicRecorder implements BaseEncoderTask {
     @Override
     public void release() {
         if (mRecordHandler != null) mRecordHandler.sendEmptyMessage(RecordAction.MSG_RELEASE);
-        mRecordThread.quitSafely();
+
     }
 
     @Override

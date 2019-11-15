@@ -17,7 +17,13 @@ package com.softard.wow.screencapture.config;
  */
 
 
+import android.media.AudioFormat;
 import android.media.MediaFormat;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
 
 /**
  * @author yrom
@@ -33,15 +39,30 @@ public class AudioEncodeConfig extends EncodeConfig implements ConfigInterface {
     private final static String TAG = "AudioEncodeConfig";
     final int bitRate;
     public final int sampleRate;
+    private int mChannelsSampleRate;
     public final int channelCount;
     final int profile;
 
-    public AudioEncodeConfig(String codecName, String codeMIMEType, int bitRate, int sampleRate, int channelCount, int profile) {
+    @IntDef(value = {
+            AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.CHANNEL_IN_LEFT, AudioFormat.CHANNEL_IN_RIGHT, AudioFormat.CHANNEL_IN_FRONT,
+            AudioFormat.CHANNEL_IN_BACK, AudioFormat.CHANNEL_IN_LEFT_PROCESSED, AudioFormat.CHANNEL_IN_RIGHT_PROCESSED,
+            AudioFormat.CHANNEL_IN_FRONT_PROCESSED, AudioFormat.CHANNEL_IN_BACK_PROCESSED, AudioFormat.CHANNEL_IN_PRESSURE,
+            AudioFormat.CHANNEL_IN_X_AXIS, AudioFormat.CHANNEL_IN_Y_AXIS, AudioFormat.CHANNEL_IN_Z_AXIS,
+            AudioFormat.CHANNEL_IN_VOICE_UPLINK, AudioFormat.CHANNEL_IN_VOICE_DNLINK, AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.CHANNEL_IN_STEREO
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AudioChannelCountType {
+    }
+
+
+    public AudioEncodeConfig(String codecName, String codeMIMEType, int bitRate, int sampleRate, @AudioChannelCountType int channelCount, int profile) {
         super(codecName, codeMIMEType);
         this.bitRate = bitRate;
         this.sampleRate = sampleRate;
         this.channelCount = channelCount;
         this.profile = profile;
+        mChannelsSampleRate = sampleRate * channelCount;
     }
 
     @Override

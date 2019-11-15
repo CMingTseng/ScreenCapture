@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
+import android.media.AudioFormat;
 import android.media.MediaCodecInfo;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -147,7 +148,7 @@ public class ScreenRecordByCodecActivity extends AppCompatActivity {
         }
         int bitrate = 80;//getSelectedAudioBitrate();
         int samplerate = 44100;//getSelectedAudioSampleRate();
-        int channelCount = 1;//getSelectedAudioChannelCount();
+        int channelCount = AudioFormat.CHANNEL_IN_MONO;//getSelectedAudioChannelCount();
         int profile = 1;//getSelectedAudioProfile();
 
         return new AudioEncodeConfig(codec, AUDIO_AAC, bitrate, samplerate, channelCount, profile);
