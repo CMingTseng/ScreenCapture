@@ -62,7 +62,8 @@ public class ScreenRecorder {
         mVirtualDisplay = display;
         mDstPath = dstPath;
         mVideoEncoder = new VideoEncoder(video);
-        mAudioEncoder = audio == null ? null : new MicRecorder(audio);
+//        mAudioEncoder = audio == null ? null : new MicRecorder(audio);
+        mAudioEncoder = new MicRecorder(audio);
     }
 
     /**
@@ -79,6 +80,7 @@ public class ScreenRecorder {
     }
 
     public void start() {
+        Log.e(TAG, "start");
         if (mWorker != null) throw new IllegalStateException();
         mWorker = new HandlerThread(TAG);
         mWorker.start();
@@ -110,6 +112,7 @@ public class ScreenRecorder {
     }
 
     private void record() {
+        Log.e(TAG, "record");
         if (mIsRunning.get() || mForceQuit.get()) {
             throw new IllegalStateException();
         }
@@ -122,8 +125,9 @@ public class ScreenRecorder {
             // create muxer
             mMuxer = new MediaMuxer(mDstPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
             // create encoder and input surface
-            prepareVideoEncoder();
+
             prepareAudioEncoder();
+            prepareVideoEncoder();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -404,6 +408,7 @@ public class ScreenRecorder {
 
 
         };
+        Log.e(TAG, "call MicRecorder prepare");
 //        micRecorder.setCallback(callback);
         micRecorder.prepare();
     }

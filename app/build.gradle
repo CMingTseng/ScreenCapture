@@ -46,4 +46,9 @@ dependencies {
 //    compile 'com.rmtheis:tess-two:8.0.0'
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
+
+    implementation "com.jeremyliao:live-event-bus-x:1.5.2"
 }

@@ -2,7 +2,6 @@ package com.softard.wow.screencapture.Utils;
 
 import android.annotation.TargetApi;
 import android.hardware.Camera;
-import android.hardware.camera2.*;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;

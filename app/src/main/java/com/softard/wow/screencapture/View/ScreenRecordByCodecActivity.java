@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
-import android.media.AudioFormat;
 import android.media.MediaCodecInfo;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -141,17 +140,19 @@ public class ScreenRecordByCodecActivity extends AppCompatActivity {
     }
 
     private AudioEncodeConfig createAudioConfig() {
-        if (!enableAudio) return null;
-        String codec = null;//getSelectedAudioCodec();
-        if (codec == null) {
-            return null;
-        }
+//        if (!enableAudio) return null;
+        String codec = "OMX.google.aac.encoder";//getSelectedAudioCodec();
+//        if (codec == null) {
+//            return null;
+//        }
         int bitrate = 80;//getSelectedAudioBitrate();
         int samplerate = 44100;//getSelectedAudioSampleRate();
-        int channelCount = AudioFormat.CHANNEL_IN_MONO;//getSelectedAudioChannelCount();
+        int channelCount = 2;//getSelectedAudioChannelCount();//FIXME CHANNEL_IN_MONO get 16 !!!
         int profile = 1;//getSelectedAudioProfile();
+        AudioEncodeConfig co = new AudioEncodeConfig(codec, AUDIO_AAC, bitrate, samplerate, channelCount, profile);
+        Log.e("createAudioConfig", "Show  AudioEncodeConfig : " + co);
 
-        return new AudioEncodeConfig(codec, AUDIO_AAC, bitrate, samplerate, channelCount, profile);
+        return co;
     }
 
     private VideoEncodeConfig createVideoConfig() {

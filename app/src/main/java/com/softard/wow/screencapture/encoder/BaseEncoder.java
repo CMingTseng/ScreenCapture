@@ -2,7 +2,6 @@ package com.softard.wow.screencapture.encoder;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
-import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
@@ -60,13 +59,15 @@ public abstract class BaseEncoder implements BaseEncoderAction {
      */
     @Override
     public void prepare() throws IOException {
-        if (Looper.myLooper() == null
-                || Looper.myLooper() == Looper.getMainLooper()) {
-            throw new IllegalStateException("should run in a HandlerThread");
-        }
-        if (mEncoder != null) {
-            throw new IllegalStateException("prepared!");
-        }
+//        Log.d(TAG, "Show Looper : " + Looper.myLooper() );
+
+//        if (Looper.myLooper() == null
+//                || Looper.myLooper() == Looper.getMainLooper()) {
+//            throw new IllegalStateException("should run in a HandlerThread");
+//        }
+//        if (mEncoder != null) {
+//            throw new IllegalStateException("prepared!");
+//        }
         MediaFormat format = generateMediaFormat();
         Log.d(TAG, "Create media format: " + format);
 

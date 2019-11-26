@@ -1,7 +1,5 @@
 package com.softard.wow.screencapture.QRCode;
 
-import android.graphics.Bitmap;
-
 //import com.googlecode.tesseract.android.TessBaseAPI;
 
 /**

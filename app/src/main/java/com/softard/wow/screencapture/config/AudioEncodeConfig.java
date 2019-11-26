@@ -56,7 +56,7 @@ public class AudioEncodeConfig extends EncodeConfig implements ConfigInterface {
     }
 
 
-    public AudioEncodeConfig(String codecName, String codeMIMEType, int bitRate, int sampleRate, @AudioChannelCountType int channelCount, int profile) {
+    public AudioEncodeConfig(String codecName, String codeMIMEType, int bitRate, int sampleRate, int channelCount, int profile) {
         super(codecName, codeMIMEType);
         this.bitRate = bitRate;
         this.sampleRate = sampleRate;
